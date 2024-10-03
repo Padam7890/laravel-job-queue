@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -31,18 +32,20 @@ class ProcessExcelUpload implements ShouldQueue
            if($saveExcell){
             // delete the file after processing
             Storage::delete($this->filePath);
-            return response()->json(['message' => 'File uploaded successfully']);
+            return response()->json(['message' => 'File uploaded successfully'],200);
            }
         } catch (Throwable $e) {
             Log::error('Failed to process Excel file: ' . $e->getMessage());
-            $this->fail($e); // Mark the job as failed
-            return response()->json(['error' => 'Failed to process Excel file']);
+            $this->fail($e); 
+            Storage::delete($this->filePath);
+            return response()->json(['error' => 'Failed to process Excel file'],400);
         }
     }
 
-    public function failed(Throwable $exception)
+    public function failed(Throwable $exception)    
     {
         Log::error('Job failed: ' . $exception->getMessage());
-        return response()->json(['error' => 'Job failed']);
+        Storage::delete($this->filePath);
+        return response()->json(['error' => 'Job failed'],400);
     }
 }

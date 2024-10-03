@@ -22,22 +22,20 @@ class MobileNumbersImport implements ToModel, WithChunkReading, WithBatchInserts
                 'mobile_number' => $row[0], 
             ]);
         }
-
-        Log::error('Missing mobile number for row: ' . json_encode($row));
-        //return response
-        return response()->json(['error' => 'Missing mobile number for row: ' . json_encode($row)]);
+        else {
+            Log::error('Missing mobile number for row: ' . json_encode($row));
+            return response()->json(['error' => 'Missing mobile number for row: ' . json_encode($row)],400);
+        }
     }
 
 
     public function batchSize(): int
     {
-         // Insert 1000 rows per batch
         return 1000;
     }
 
     public function chunkSize(): int
     {
-        // Process 1000 rows per chunk
         return 1000; 
     }
 }
