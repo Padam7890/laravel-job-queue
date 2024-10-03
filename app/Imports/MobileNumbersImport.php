@@ -17,17 +17,17 @@ class MobileNumbersImport implements ToModel, WithChunkReading, WithBatchInserts
     {
         Log::info('Processing row: ' . json_encode($row));
 
+        // Check if the mobile number exists and is not empty
         if (isset($row[0]) && !empty($row[0])) { 
             return new MobileNumber([
                 'mobile_number' => $row[0], 
             ]);
-        }
-        else {
-            Log::error('Missing mobile number for row: ' . json_encode($row));
-            return response()->json(['error' => 'Missing mobile number for row: ' . json_encode($row)],400);
+        } else {
+            // Log error 
+            Log::error('Missing mobile number for row: ' . json_encode($row));            
+            return null; 
         }
     }
-
 
     public function batchSize(): int
     {
