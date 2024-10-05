@@ -5,3 +5,4 @@
 3) select file using `form-data` in postman
 
 Note: must configure `QUEUE_CONNECTION`  in `.env` 
+i have provided .env files in .env.example you can use that file to configure your project
